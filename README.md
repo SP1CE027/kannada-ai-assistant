@@ -1,1 +1,1 @@
-Village AI Box Project
+Ai-Assistant-K
