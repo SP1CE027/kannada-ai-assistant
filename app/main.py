@@ -1,4 +1,5 @@
 from app.state import AssistantState
+from app.audio import load_audio_info
 import time
 
 def main():
@@ -10,8 +11,17 @@ def main():
     print(f"STATE → {state.value}")
     time.sleep(1)
 
-    state = AssistantState.PROCESSING
-    print(f"STATE → {state.value}")
+    try:
+        audio_info = load_audio_info()
+        state = AssistantState.PROCESSING
+        print(f"STATE → {state.value}")
+        print("AUDIO INFO:", audio_info)
+    except Exception as e:
+        state = AssistantState.ERROR
+        print(f"STATE → {state.value}")
+        print("ERROR:", e)
+        return
+
     time.sleep(1)
 
     state = AssistantState.SPEAKING
