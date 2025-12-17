@@ -1,19 +1,25 @@
 from pathlib import Path
-import wave
+import soundfile as sf
+import numpy as np
+import librosa
 
-AUDIO_PATH = Path("audio_samples/user_input.wav")
+RAW_AUDIO = Path("audio_samples/user_input.wav")
+NORM_AUDIO = Path("audio_samples/user_input_norm.wav")
 
-def load_audio_info():
-    if not AUDIO_PATH.exists():
-        raise FileNotFoundError(f"Audio file not found: {AUDIO_PATH}")
+def normalize_audio():
+    if not RAW_AUDIO.exists():
+        raise FileNotFoundError(f"Audio file not found: {RAW_AUDIO}")
 
-    with wave.open(str(AUDIO_PATH), "rb") as wf:
-        info = {
-            "channels": wf.getnchannels(),
-            "sample_width": wf.getsampwidth(),
-            "frame_rate": wf.getframerate(),
-            "frames": wf.getnframes(),
-            "duration_sec": wf.getnframes() / wf.getframerate(),
-        }
+    data, sr = sf.read(RAW_AUDIO)
 
-    return info
+    # stereo → mono
+    if data.ndim > 1:
+        data = np.mean(data, axis=1)
+
+    # resample to 16kHz
+    if sr != 16000:
+        data = librosa.resample(data, orig_sr=sr, target_sr=16000)
+        sr = 16000
+
+    sf.write(NORM_AUDIO, data, sr)
+    return NORM_AUDIO

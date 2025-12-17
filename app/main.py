@@ -1,5 +1,5 @@
 from app.state import AssistantState
-from app.audio import load_audio_info
+from app.audio import normalize_audio
 import time
 
 def main():
@@ -12,10 +12,10 @@ def main():
     time.sleep(1)
 
     try:
-        audio_info = load_audio_info()
+        norm_path = normalize_audio()
         state = AssistantState.PROCESSING
         print(f"STATE → {state.value}")
-        print("AUDIO INFO:", audio_info)
+        print("NORMALIZED AUDIO:", norm_path)
     except Exception as e:
         state = AssistantState.ERROR
         print(f"STATE → {state.value}")
