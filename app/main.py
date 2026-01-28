@@ -1,4 +1,5 @@
 from app.state import AssistantState
+from app.mic import record_audio
 from app.audio import normalize_audio
 import time
 
@@ -9,7 +10,8 @@ def main():
 
     state = AssistantState.LISTENING
     print(f"STATE → {state.value}")
-    time.sleep(1)
+
+    record_audio(duration=10)
 
     try:
         norm_path = normalize_audio()
